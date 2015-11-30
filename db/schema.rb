@@ -19,10 +19,10 @@ ActiveRecord::Schema.define(version: 20151130212334) do
 
   create_table "ideas", force: :cascade do |t|
     t.citext   "title"
-    t.citext   "body"
-    t.integer  "quality"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.citext   "description"
+    t.integer  "quality",     default: 0
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
 end

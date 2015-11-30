@@ -4,8 +4,8 @@ class CreateIdeas < ActiveRecord::Migration
 
     create_table :ideas do |t|
       t.citext :title
-      t.citext :body
-      t.integer :quality
+      t.citext :description
+      t.integer :quality, default: 0
 
       t.timestamps null: false
     end
