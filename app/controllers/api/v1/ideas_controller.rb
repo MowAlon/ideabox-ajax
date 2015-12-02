@@ -8,7 +8,6 @@ class Api::V1::IdeasController < ApplicationController
   def create
     new_idea = Idea.new(idea_params)
     if new_idea.save
-      # respond_with new_idea, status: 200, location: [:api, :v1, new_idea]
       render json: new_idea, status: 200
     else
       render json: new_idea.errors, status: 400
@@ -17,8 +16,11 @@ class Api::V1::IdeasController < ApplicationController
 
   def update
     idea = Idea.find_by(id: params[:id])
-    idea.send(params[:update_type])
-    render json: idea, status: 200
+    if idea.send(params[:update_type])
+      render json: idea, status: 200
+    else
+      render json: idea.errors, status: 400
+    end
   end
 
   def destroy

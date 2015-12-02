@@ -5,6 +5,8 @@ $(document).ready(function() {
   deleteIdea();
   approveIdea();
   rejectIdea();
+  makeIdeaEditable();
+  editIdea();
 });
 
 function newIdea(submit){
@@ -38,33 +40,46 @@ function listIdeas(){
    });
 }
 
-function approveIdea(){
-  $(document).on("click", ".approve", function () {
-    var approveId = $(this).closest(".idea").attr("id")
-
-    $.ajax({
-       type: 'PATCH',
-       url: '/api/v1/ideas/' + approveId + '.json?update_type=approve',
-       success: function(idea){
-         console.log("approved!")
-         refreshIdea(idea)
-       },
-       error: function(){
-         console.log("fail")
-       }
-     })
-   });
+function approveIdea() {
+  updateIdea("approve");
 }
 
-function rejectIdea(){
-  $(document).on("click", ".reject", function () {
-    var approveId = $(this).closest(".idea").attr("id")
+function rejectIdea() {
+  updateIdea("reject");
+}
+
+function makeIdeaEditable() {
+  $(document).on("click", ".edit", function () {
+    console.log("Clicked edit button");
+    var idea_id = $(this).closest(".idea").attr("id")
+    var inputFields = $(this).siblings(".input-fields");
+    var title = inputFields.find(".title").text();
+    var description = inputFields.find(".description").text();
+
+    inputFields.replaceWith("<div class='input-fields'>" +
+                              "<h1>" + idea_id + ".</h1>" +
+                              "<form action='/' method='put'>" +
+                                "<input value='" + title + "' type='text' name='idea[title]' id='idea_title' />" +
+                                "<textarea name='idea[description]' id='idea_description'>" + description + "</textarea>" +
+                                "<input id='submit-edit' type='submit' value='Submit'>" +
+                              "</form>" +
+                            "</div>"
+                          );
+  });
+}
+
+function editIdea() {
+  // updateIdea("edit")
+}
+
+function updateIdea(update_type){
+  $(document).on("click", "." + update_type, function () {
+    var idea_id = $(this).closest(".idea").attr("id")
 
     $.ajax({
        type: 'PATCH',
-       url: '/api/v1/ideas/' + approveId + '.json?update_type=reject',
+       url: '/api/v1/ideas/' + idea_id + '.json?update_type=' + update_type,
        success: function(idea){
-         console.log("REJECTED!")
          refreshIdea(idea)
        },
        error: function(){
@@ -101,12 +116,15 @@ function refreshIdea(idea) {
 
 function ideaElement(idea) {
   return "<div id='" + idea.id + "' class='idea'>" +
-          "<h1>" + idea.id + ". " + idea.title + "</h1>" +
-          "<h3>" + idea.description + "</h3>" +
+          "<div class='input-fields'>" +
+            "<h1>" + idea.id + ". <span class='title'>" + idea.title + "</span></h1>" +
+            "<h3><span class='description'>" + idea.description + "</span></h3>" +
+          "</div>" +
           "<p class='text-right'>Submitted: " + idea.created_at + " -- Current rating: " + idea.quality + " -- " +
           "<button class='btn btn-success approve'><span class='glyphicon glyphicon-thumbs-up'></span></button>" +
           "<button class='btn btn-danger reject'><span class='glyphicon glyphicon-thumbs-down'></span></button></p>" +
-          "<a class='btn btn-primary delete'><span class='glyphicon glyphicon-trash'></span></a>" +
+          "<a class='btn btn-info edit'><span class='glyphicon glyphicon-pencil'></span></a>" +
+          "<a class='btn btn-danger delete'><span class='glyphicon glyphicon-trash'></span></a>" +
           "<hr>" +
         "</div>"
 }
