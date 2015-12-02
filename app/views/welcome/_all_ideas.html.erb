@@ -1,12 +1,6 @@
 <div class='row'>
   <div class='col-md-12'>
-    <div class='panel panel-body'>
-      <% @ideas.each do |idea| %>
-        <h1><%= idea.id %>. <%= idea.title %></h1>
-        <h3><%= idea.description %></h3>
-        <h4 class='text-right'>Current rating: <%= idea.quality %></h4>
-        <hr>
-      <% end %>
+    <div id='idea_list' class='panel panel-body'>
     </div>
   </div>
 </div>
