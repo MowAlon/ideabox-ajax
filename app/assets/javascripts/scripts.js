@@ -49,36 +49,41 @@ function rejectIdea() {
 }
 
 function makeIdeaEditable() {
-  $(document).on("click", ".edit", function () {
-    console.log("Clicked edit button");
+  $(document).on("click", ".make-editable", function () {
     var idea_id = $(this).closest(".idea").attr("id")
-    var inputFields = $(this).siblings(".input-fields");
-    var title = inputFields.find(".title").text();
-    var description = inputFields.find(".description").text();
+    var ideaContent = $(this).siblings(".idea-content");
+    var title = ideaContent.find(".title").text();
+    var description = ideaContent.find(".description").text();
 
-    inputFields.replaceWith("<div class='input-fields'>" +
+    ideaContent.replaceWith("<div class='edit-boxes'>" +
                               "<h1>" + idea_id + ".</h1>" +
                               "<form action='/' method='put'>" +
-                                "<input value='" + title + "' type='text' name='idea[title]' id='idea_title' />" +
-                                "<textarea name='idea[description]' id='idea_description'>" + description + "</textarea>" +
-                                "<input id='submit-edit' type='submit' value='Submit'>" +
+                                "<input class='title' value='" + title + "' type='text' name='idea[title]' id='idea_title' />" +
+                                "<textarea class='description' name='idea[description]' id='idea_description'>" + description + "</textarea>" +
                               "</form>" +
+                              "<button class='btn btn-primary edit'>Save</button>" +
                             "</div>"
                           );
   });
 }
 
 function editIdea() {
-  // updateIdea("edit")
+  updateIdea("edit")
 }
 
 function updateIdea(update_type){
   $(document).on("click", "." + update_type, function () {
     var idea_id = $(this).closest(".idea").attr("id")
+    var title, description
+
+    if (update_type === "edit") {
+      title = $(this).closest(".idea").find(".title").val()
+      description = $(this).closest(".idea").find(".description").val()
+    }
 
     $.ajax({
        type: 'PATCH',
-       url: '/api/v1/ideas/' + idea_id + '.json?update_type=' + update_type,
+       url: '/api/v1/ideas/' + idea_id + '.json?update_type=' + update_type + "&title=" + title + "&description=" + description,
        success: function(idea){
          refreshIdea(idea)
        },
@@ -116,14 +121,14 @@ function refreshIdea(idea) {
 
 function ideaElement(idea) {
   return "<div id='" + idea.id + "' class='idea'>" +
-          "<div class='input-fields'>" +
+          "<div class='idea-content'>" +
             "<h1>" + idea.id + ". <span class='title'>" + idea.title + "</span></h1>" +
             "<h3><span class='description'>" + idea.description + "</span></h3>" +
           "</div>" +
           "<p class='text-right'>Submitted: " + idea.created_at + " -- Current rating: " + idea.quality + " -- " +
           "<button class='btn btn-success approve'><span class='glyphicon glyphicon-thumbs-up'></span></button>" +
           "<button class='btn btn-danger reject'><span class='glyphicon glyphicon-thumbs-down'></span></button></p>" +
-          "<a class='btn btn-info edit'><span class='glyphicon glyphicon-pencil'></span></a>" +
+          "<a class='btn btn-info make-editable'><span class='glyphicon glyphicon-pencil'></span></a>" +
           "<a class='btn btn-danger delete'><span class='glyphicon glyphicon-trash'></span></a>" +
           "<hr>" +
         "</div>"

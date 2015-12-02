@@ -16,10 +16,19 @@ class Api::V1::IdeasController < ApplicationController
 
   def update
     idea = Idea.find_by(id: params[:id])
-    if idea.send(params[:update_type])
-      render json: idea, status: 200
+    update_type = params[:update_type]
+    if update_type == "edit"
+      if idea.edit(params[:title], params[:description])
+        render json: idea, status: 200
+      else
+        render json: idea.errors, status: 400
+      end
     else
-      render json: idea.errors, status: 400
+      if idea.send(params[:update_type])
+        render json: idea, status: 200
+      else
+        render json: idea.errors, status: 400
+      end
     end
   end
 

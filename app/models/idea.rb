@@ -9,6 +9,10 @@ class Idea < ActiveRecord::Base
     update(quality: quality_value - 1) unless quality_value == 0
   end
 
+  def edit(title, description)
+    update(title: title, description: description)
+  end
+
   private
 
     def quality_count

@@ -4,12 +4,10 @@
       <%= form_for @idea, url: root_path do  |f| %>
         <%= f.text_field :title, placeholder: "Title" %>
         <%= f.text_area :description, placeholder: "Description" %>
-        <%#= f.submit "Submit Your Bright Idea", id: 'submit_idea' %>
       <% end %>
-        <button id='submit_idea' class='btn btn-primary'>
-          Submit Your Bright Idea
-        </button>
-
+      <button id='submit_idea' class='btn btn-primary'>
+        Submit Your Bright Idea
+      </button>
     </div>
   </div>
 </div>
