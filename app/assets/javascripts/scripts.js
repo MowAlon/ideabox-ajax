@@ -106,7 +106,7 @@ function ideaElement(idea) {
           "<p class='text-right'>Submitted: " + idea.created_at + " -- Current rating: " + idea.quality + " -- " +
           "<button class='btn btn-success approve'><span class='glyphicon glyphicon-thumbs-up'></span></button>" +
           "<button class='btn btn-danger reject'><span class='glyphicon glyphicon-thumbs-down'></span></button></p>" +
-          "<a class='btn btn-primary delete'>Delete</a>" +
+          "<a class='btn btn-primary delete'><span class='glyphicon glyphicon-trash'></span></a>" +
           "<hr>" +
         "</div>"
 }
