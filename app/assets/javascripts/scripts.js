@@ -16,7 +16,7 @@ function newIdea(submit){
       type: 'POST',
       url: '/api/v1/ideas.json?title=' + new_title + '&description=' + new_description,
       success: function(ideas){
-        displayIdea(ideas)
+        addIdeaToView(ideas)
       },
       error: function(){
         console.log("fail")
@@ -30,7 +30,7 @@ function listIdeas(){
      type: 'GET',
      url: '/api/v1/ideas.json',
      success: function(response){
-       response.forEach(displayIdea);
+       response.forEach(addIdeaToView);
      },
      error: function(){
        console.log("fail")
@@ -47,6 +47,7 @@ function approveIdea(){
        url: '/api/v1/ideas/' + approveId + '.json?update_type=approve',
        success: function(idea){
          console.log("approved!")
+         refreshIdea(idea)
        },
        error: function(){
          console.log("fail")
@@ -64,6 +65,7 @@ function rejectIdea(){
        url: '/api/v1/ideas/' + approveId + '.json?update_type=reject',
        success: function(idea){
          console.log("REJECTED!")
+         refreshIdea(idea)
        },
        error: function(){
          console.log("fail")
@@ -80,7 +82,7 @@ function deleteIdea(){
        type: 'DELETE',
        url: '/api/v1/ideas/' + deleteId + '.json',
        success: function(idea){
-         clearIdea(idea)
+         removeIdeaFromView(idea)
        },
        error: function(){
          console.log("fail")
@@ -89,19 +91,26 @@ function deleteIdea(){
    });
 }
 
-function displayIdea(idea) {
-  $('#idea_list').prepend("<div id='" + idea.id + "' class='idea'>" +
-                            "<h1>" + idea.id + ". " + idea.title + "</h1>" +
-                            "<h3>" + idea.description + "</h3>" +
-                            "<p class='text-right'>Submitted: " + idea.created_at + " -- Current rating: " + idea.quality + " -- " +
-                            "<button class='btn btn-success approve'><span class='glyphicon glyphicon-thumbs-up'></span></button>" +
-                            "<button class='btn btn-danger reject'><span class='glyphicon glyphicon-thumbs-down'></span></button></p>" +
-                            "<a class='btn btn-primary delete'>Delete</a>" +
-                            "<hr>" +
-                          "</div>"
-                        );
+function addIdeaToView(idea) {
+  $('#idea_list').prepend(ideaElement(idea));
 }
 
-function clearIdea(idea) {
+function refreshIdea(idea) {
+  $('#' + idea.id).replaceWith(ideaElement(idea));
+}
+
+function ideaElement(idea) {
+  return "<div id='" + idea.id + "' class='idea'>" +
+          "<h1>" + idea.id + ". " + idea.title + "</h1>" +
+          "<h3>" + idea.description + "</h3>" +
+          "<p class='text-right'>Submitted: " + idea.created_at + " -- Current rating: " + idea.quality + " -- " +
+          "<button class='btn btn-success approve'><span class='glyphicon glyphicon-thumbs-up'></span></button>" +
+          "<button class='btn btn-danger reject'><span class='glyphicon glyphicon-thumbs-down'></span></button></p>" +
+          "<a class='btn btn-primary delete'>Delete</a>" +
+          "<hr>" +
+        "</div>"
+}
+
+function removeIdeaFromView(idea) {
   $('#' + idea.id).remove();
 }

@@ -18,7 +18,7 @@ class Api::V1::IdeasController < ApplicationController
   def update
     idea = Idea.find_by(id: params[:id])
     idea.send(params[:update_type])
-    render json: Idea.first, status: 200
+    render json: idea, status: 200
   end
 
   def destroy
