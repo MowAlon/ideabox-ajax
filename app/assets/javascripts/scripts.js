@@ -18,8 +18,8 @@ function newIdea(submit){
     $.ajax({
       type: 'POST',
       url: '/api/v1/ideas.json?title=' + new_title + '&description=' + new_description,
-      success: function(ideas){
-        addIdeaToView(ideas)
+      success: function(idea){
+        addIdeaToView(idea)
       },
       error: function(){
         console.log("fail")
@@ -32,8 +32,8 @@ function listIdeas(){
   $.ajax({
      type: 'GET',
      url: '/api/v1/ideas.json',
-     success: function(response){
-       response.forEach(addIdeaToView);
+     success: function(ideas){
+       addManyIdeasToView(ideas)
      },
      error: function(){
        console.log("fail")
@@ -112,6 +112,10 @@ function deleteIdea(){
    });
 }
 
+function addManyIdeasToView(ideas) {
+  ideas.forEach(addIdeaToView);
+}
+
 function addIdeaToView(idea) {
   $('#idea_list').prepend(ideaElement(idea));
 }
@@ -141,21 +145,18 @@ function removeIdeaFromView(idea) {
 
 function filterIdeas() {
   $(document).on("keyup", "#filter", function () {
-
-    console.log("Filtering!")
+    var filterText = $(this).val();
+    var allIdeas = $("#idea_list").children();
+    var matchedIdeas = $("span:contains('" + filterText + "')").closest(".idea");
+    allIdeas.each(hideIdea);
+    matchedIdeas.each(showIdea);
   });
-    // var deleteId = $(this).closest(".idea").attr("id")
+}
 
-  //   $.ajax({
-  //      type: 'DELETE',
-  //      url: '/api/v1/ideas/' + deleteId + '.json',
-  //      success: function(idea){
-  //        removeIdeaFromView(idea)
-  //      },
-  //      error: function(){
-  //        console.log("fail")
-  //      }
-  //    })
-  //  });
+function hideIdea(idea) {
+  $('#' + $(this).attr("id")).toggleClass("hidden", true);
+}
 
+function showIdea(idea) {
+  $('#' + $(this).attr("id")).toggleClass("hidden", false);
 }
