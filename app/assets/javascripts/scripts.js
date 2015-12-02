@@ -3,6 +3,8 @@ $(document).ready(function() {
   listIdeas();
   newIdea($submitButton);
   deleteIdea();
+  approveIdea();
+  rejectIdea();
 });
 
 function newIdea(submit){
@@ -23,23 +25,6 @@ function newIdea(submit){
    });
 }
 
-function deleteIdea(){
-  $(document).on("click", ".delete", function () {
-    var deleteId = $(this).closest(".idea").attr("id")
-
-    $.ajax({
-       type: 'DELETE',
-       url: '/api/v1/ideas/' + deleteId + '.json',
-       success: function(idea){
-         removeIdea(idea)
-       },
-       error: function(){
-         console.log("fail")
-       }
-     })
-   });
-}
-
 function listIdeas(){
   $.ajax({
      type: 'GET',
@@ -50,19 +35,73 @@ function listIdeas(){
      error: function(){
        console.log("fail")
      }
-   })
+   });
+}
+
+function approveIdea(){
+  $(document).on("click", ".approve", function () {
+    var approveId = $(this).closest(".idea").attr("id")
+
+    $.ajax({
+       type: 'PATCH',
+       url: '/api/v1/ideas/' + approveId + '.json?update_type=approve',
+       success: function(idea){
+         console.log("approved!")
+       },
+       error: function(){
+         console.log("fail")
+       }
+     })
+   });
+}
+
+function rejectIdea(){
+  $(document).on("click", ".reject", function () {
+    var approveId = $(this).closest(".idea").attr("id")
+
+    $.ajax({
+       type: 'PATCH',
+       url: '/api/v1/ideas/' + approveId + '.json?update_type=reject',
+       success: function(idea){
+         console.log("REJECTED!")
+       },
+       error: function(){
+         console.log("fail")
+       }
+     })
+   });
+}
+
+function deleteIdea(){
+  $(document).on("click", ".delete", function () {
+    var deleteId = $(this).closest(".idea").attr("id")
+
+    $.ajax({
+       type: 'DELETE',
+       url: '/api/v1/ideas/' + deleteId + '.json',
+       success: function(idea){
+         clearIdea(idea)
+       },
+       error: function(){
+         console.log("fail")
+       }
+     })
+   });
 }
 
 function displayIdea(idea) {
   $('#idea_list').prepend("<div id='" + idea.id + "' class='idea'>" +
                             "<h1>" + idea.id + ". " + idea.title + "</h1>" +
                             "<h3>" + idea.description + "</h3>" +
-                            "<h4 class='text-right'>Submitted: " + idea.created_at + " -- Current rating: " + idea.quality + "</h4>" +
-                            "<a class='btn btn-primary delete'>Delete</a><hr>" +
+                            "<p class='text-right'>Submitted: " + idea.created_at + " -- Current rating: " + idea.quality + " -- " +
+                            "<button class='btn btn-success approve'><span class='glyphicon glyphicon-thumbs-up'></span></button>" +
+                            "<button class='btn btn-danger reject'><span class='glyphicon glyphicon-thumbs-down'></span></button></p>" +
+                            "<a class='btn btn-primary delete'>Delete</a>" +
+                            "<hr>" +
                           "</div>"
-                          )
+                        );
 }
 
-function removeIdea(idea) {
-  $('#' + idea.id).addClass('hidden')
+function clearIdea(idea) {
+  $('#' + idea.id).remove();
 }

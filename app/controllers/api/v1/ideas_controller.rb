@@ -15,6 +15,12 @@ class Api::V1::IdeasController < ApplicationController
     end
   end
 
+  def update
+    idea = Idea.find_by(id: params[:id])
+    idea.send(params[:update_type])
+    render json: Idea.first, status: 200
+  end
+
   def destroy
     deleted_idea = Idea.find_by(id: params[:id]).destroy
     if deleted_idea
