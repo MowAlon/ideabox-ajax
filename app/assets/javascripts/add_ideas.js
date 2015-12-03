@@ -16,8 +16,9 @@ function newIdea(submit){
     var endpoint = '/api/v1/ideas.json?title=' + new_title + '&description=' + new_description + '&tags=' + new_tags
 
     $.post(endpoint).then(function (idea){
-      addIdeaToView(idea)
-      clearSubmitFields()
+      addIdeaToView(idea);
+      clearSubmitFields();
+      refreshTagList();
     })
     .fail(function() {
       console.log("fail");
