@@ -33,5 +33,5 @@ function addTagToView(tag) {
 }
 
 function tagElement(tag) {
-  return "<button id='" + tag.name + "' class='tag'>" + tag.name + "</button>"
+  return "<button id='" + tag.name + "' class='btn tag_button'>" + tag.name + "</button>"
 }

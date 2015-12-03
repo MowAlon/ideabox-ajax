@@ -2,7 +2,8 @@ class Api::V1::IdeasController < ApplicationController
   respond_to :json
 
   def index
-    respond_with Idea.all.order('created_at ASC')
+    ideas = Idea.all.order('created_at ASC')
+    respond_with ideas_with_tags(ideas)
   end
 
   def show
@@ -11,8 +12,8 @@ class Api::V1::IdeasController < ApplicationController
 
   def create
     new_idea = Idea.new(idea_params.except("tags"))
-    Tag.add_new_tags(params[:tags]) if !params[:tags].empty?
     if new_idea.save
+      Tag.add_new_tags(params[:tags], new_idea.id) if !params[:tags].empty?
       render json: new_idea, status: 200
     else
       render json: new_idea.errors, status: 400
@@ -50,5 +51,12 @@ class Api::V1::IdeasController < ApplicationController
 
     def idea_params
       params.permit(:title, :description, :tags)
+    end
+
+    def ideas_with_tags(ideas)
+      JSON.parse(ideas.to_json).map do |idea|
+        idea["tags"] = Idea.find(idea["id"]).tags.map{|tag| tag.name}.join(", ")
+        idea
+      end
     end
 end
