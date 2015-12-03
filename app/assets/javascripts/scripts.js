@@ -9,24 +9,6 @@ $(document).ready(function() {
   editIdea();
 });
 
-function newIdea(submit){
-  submit.on("click", function() {
-    var new_title = $('#idea_title').val()
-    var new_description = $('#idea_description').val()
-
-    $.ajax({
-      type: 'POST',
-      url: '/api/v1/ideas.json?title=' + new_title + '&description=' + new_description,
-      success: function(ideas){
-        addIdeaToView(ideas)
-      },
-      error: function(){
-        console.log("fail")
-      }
-     })
-   });
-}
-
 function listIdeas(){
   $.ajax({
      type: 'GET',
@@ -37,6 +19,42 @@ function listIdeas(){
      error: function(){
        console.log("fail")
      }
+   });
+}
+
+function newIdea(submit){
+  submit.on("click", function() {
+    var new_title = $('#idea_title').val()
+    var new_description = $('#idea_description').val()
+
+    $.ajax({
+      type: 'POST',
+      url: '/api/v1/ideas.json?title=' + new_title + '&description=' + new_description,
+      success: function(ideas){
+        addIdeaToView(ideas)
+        clearSubmitFields()
+      },
+      error: function(){
+        console.log("fail")
+      }
+     })
+   });
+}
+
+function deleteIdea(){
+  $(document).on("click", ".delete", function () {
+    var deleteId = $(this).closest(".idea").attr("id")
+
+    $.ajax({
+       type: 'DELETE',
+       url: '/api/v1/ideas/' + deleteId + '.json',
+       success: function(idea){
+         removeIdeaFromView(idea)
+       },
+       error: function(){
+         console.log("fail")
+       }
+     })
    });
 }
 
@@ -94,25 +112,13 @@ function updateIdea(update_type){
    });
 }
 
-function deleteIdea(){
-  $(document).on("click", ".delete", function () {
-    var deleteId = $(this).closest(".idea").attr("id")
-
-    $.ajax({
-       type: 'DELETE',
-       url: '/api/v1/ideas/' + deleteId + '.json',
-       success: function(idea){
-         removeIdeaFromView(idea)
-       },
-       error: function(){
-         console.log("fail")
-       }
-     })
-   });
-}
-
 function addIdeaToView(idea) {
   $('#idea_list').prepend(ideaElement(idea));
+}
+
+function clearSubmitFields() {
+  $("#idea_title").val("")
+  $("#idea_description").val("")
 }
 
 function refreshIdea(idea) {
