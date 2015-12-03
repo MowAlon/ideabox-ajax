@@ -151,7 +151,7 @@ function ideaElement(idea) {
             "<h1>" + idea.id + ". <span class='title'>" + idea.title + "</span></h1>" +
             "<h3><span class='description'>" + shortString(idea.description) + "</span></h3>" +
           "</div>" +
-          "<p class='text-right'>Submitted: " + idea.created_at + " -- Current rating: " + idea.quality + " -- " +
+          "<p class='text-right'>Submitted: " + dateFormat(idea.created_at, "shortDate") + " @ " + dateFormat(idea.created_at, "shortTime") + " -- Current rating: " + idea.quality + " -- " +
           "<button class='btn btn-success approve'><span class='glyphicon glyphicon-thumbs-up'></span></button>" +
           "<button class='btn btn-danger reject'><span class='glyphicon glyphicon-thumbs-down'></span></button></p>" +
           "<a class='btn btn-info make-editable'><span class='glyphicon glyphicon-pencil'></span></a>" + " | " +
