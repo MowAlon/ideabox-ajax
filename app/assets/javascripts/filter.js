@@ -1,8 +1,9 @@
 function filterIdeas() {
   $(document).on("keyup", "#filter", function () {
     var filterText = $(this).val();
-    hideAllIdeas()
-    showFilteredIdeas(filterText)
+    hideAllIdeas();
+    showFilteredIdeas(filterText);
+    highlightTagButton($('#all_tags_button'))
   });
 }
 
