@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  var $submitButton = $("#submit_idea")
+  var $submitButton = $("#submit_idea");
   listIdeas();
   newIdea($submitButton);
   deleteIdea();
@@ -11,35 +11,57 @@ $(document).ready(function() {
 });
 
 function listIdeas(){
-  $.ajax({
-     type: 'GET',
-     url: '/api/v1/ideas.json',
-     success: function(ideas){
-       ideas.forEach(addIdeaToView);
-     },
-     error: function(){
-       console.log("fail")
-     }
-   });
+  var endpoint = '/api/v1/ideas.json'
+  $.getJSON(endpoint).then(function (ideas){
+    ideas.forEach(addIdeaToView);
+  })
+  .fail(function() {
+    console.log("fail");
+  });
+  // $.ajax({
+  //    type: 'GET',
+  //    url: '/api/v1/ideas.json',
+  //    success: function(ideas){
+  //      ideas.forEach(addIdeaToView);
+  //    },
+  //    error: function(){
+  //      console.log("fail")
+  //    }
+  //  });
 }
+
+
+// # $.getJSON('/api/v1/ideas').then(function (data) {
+// #   data.forEach(appendIdeaToPage);
+// #   });
+
 
 function newIdea(submit){
   submit.on("click", function() {
     var new_title = $('#idea_title').val()
     var new_description = $('#idea_description').val()
+    var endpoint = '/api/v1/ideas.json?title=' + new_title + '&description=' + new_description
 
-    $.ajax({
-      type: 'POST',
-      url: '/api/v1/ideas.json?title=' + new_title + '&description=' + new_description,
-      success: function(ideas){
-        addIdeaToView(ideas)
-        clearSubmitFields()
-      },
-      error: function(){
-        console.log("fail")
-      }
-     })
-   });
+    $.post(endpoint).then(function (idea){
+      addIdeaToView(idea)
+      clearSubmitFields()
+    })
+    .fail(function() {
+      console.log("fail");
+    });
+  });
+  //   $.ajax({
+  //     type: 'POST',
+  //     url: '/api/v1/ideas.json?title=' + new_title + '&description=' + new_description,
+  //     success: function(idea){
+  //       addIdeaToView(idea)
+  //       clearSubmitFields()
+  //     },
+  //     error: function(){
+  //       console.log("fail")
+  //     }
+  //    })
+  //  });
 }
 
 function deleteIdea(){
@@ -53,7 +75,7 @@ function deleteIdea(){
          removeIdeaFromView(idea)
        },
        error: function(){
-         console.log("fail")
+         console.log("fail");
        }
      })
    });
@@ -71,24 +93,41 @@ function makeIdeaEditable() {
   $(document).on("click", ".make-editable", function () {
     var ideaID = $(this).closest(".idea").attr("id")
     var ideaContent = $(this).siblings(".idea-content");
-    $.ajax({
-       type: 'GET',
-       url: '/api/v1/ideas/' + ideaID + '.json',
-       success: function(idea){
-          ideaContent.replaceWith("<div class='edit-boxes'>" +
-                                    "<h1>" + ideaID + ".</h1>" +
-                                    "<form action='/' method='put'>" +
-                                      "<input class='title' value='" + idea.title + "' type='text' name='idea[title]' id='idea_title' />" +
-                                      "<textarea class='description' name='idea[description]' id='idea_description'>" + idea.description + "</textarea>" +
-                                    "</form>" +
-                                    "<button class='btn btn-primary edit'>Save</button>" +
-                                  "</div>"
-                                );
-       },
-       error: function(){
-         console.log("fail")
-       }
-     });
+    var endpoint = '/api/v1/ideas/' + ideaID + '.json'
+
+    $.getJSON(endpoint).then(function (idea){
+      ideaContent.replaceWith("<div class='edit-boxes'>" +
+                                "<h1>" + ideaID + ".</h1>" +
+                                "<form action='/' method='put'>" +
+                                  "<input class='title' value='" + idea.title + "' type='text' name='idea[title]' id='idea_title' />" +
+                                  "<textarea class='description' name='idea[description]' id='idea_description'>" + idea.description + "</textarea>" +
+                                "</form>" +
+                                "<button class='btn btn-primary edit'>Save</button>" +
+                              "</div>"
+                            );
+    })
+    .fail(function() {
+      console.log("fail");
+    });
+
+    // $.ajax({
+    //    type: 'GET',
+    //    url: '/api/v1/ideas/' + ideaID + '.json',
+    //    success: function(idea){
+    //       ideaContent.replaceWith("<div class='edit-boxes'>" +
+    //                                 "<h1>" + ideaID + ".</h1>" +
+    //                                 "<form action='/' method='put'>" +
+    //                                   "<input class='title' value='" + idea.title + "' type='text' name='idea[title]' id='idea_title' />" +
+    //                                   "<textarea class='description' name='idea[description]' id='idea_description'>" + idea.description + "</textarea>" +
+    //                                 "</form>" +
+    //                                 "<button class='btn btn-primary edit'>Save</button>" +
+    //                               "</div>"
+    //                             );
+    //    },
+    //    error: function(){
+    //      console.log("fail")
+    //    }
+    //  });
 
   });
 }
@@ -134,6 +173,10 @@ function addManyIdeasToView(ideas) {
 
 function addIdeaToView(idea) {
   $('#idea_list').prepend(ideaElement(idea));
+}
+
+function removeIdeaFromView(idea) {
+  $('#' + idea.id).remove();
 }
 
 function clearSubmitFields() {
