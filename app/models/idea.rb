@@ -9,7 +9,7 @@ class Idea < ActiveRecord::Base
     if send(params[:update_type])
       {object: idea_with_tags, status: 200}
     else
-      {object: idea.errors, status: 400}
+      {object: errors, status: 400}
     end
   end
 
