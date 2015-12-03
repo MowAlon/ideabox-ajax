@@ -14,7 +14,7 @@ function ideaElement(idea) {
   return "<div id='" + idea.id + "' class='idea'>" +
           "<div class='idea-content'>" +
             "<h1>" + idea.id + ". <span class='title'>" + idea.title + "</span></h1>" +
-            "<h3><span class='description'>" + shortString(idea.description) + "</span></h3>" +
+            "<h2><span class='description'>" + shortString(idea.description) + "</span></h2>" +
           "</div>" +
           "<p class='text-right'>Submitted: " + dateFormat(idea.created_at, "shortDate") + " @ " + dateFormat(idea.created_at, "shortTime") + " -- Current rating: " + idea.quality + " -- " +
           "<button class='btn btn-success approve'><span class='glyphicon glyphicon-thumbs-up'></span></button>" +
