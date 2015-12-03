@@ -2,7 +2,7 @@ class Api::V1::IdeasController < ApplicationController
   respond_to :json
 
   def index
-    respond_with Idea.all.order('created_at ASC').to_json
+    respond_with Idea.all.order('created_at ASC')
   end
 
   def show
@@ -10,7 +10,8 @@ class Api::V1::IdeasController < ApplicationController
   end
 
   def create
-    new_idea = Idea.new(idea_params)
+    new_idea = Idea.new(idea_params.except("tags"))
+    Tag.add_new_tags(params[:tags]) if !params[:tags].empty?
     if new_idea.save
       render json: new_idea, status: 200
     else
@@ -48,6 +49,6 @@ class Api::V1::IdeasController < ApplicationController
   private
 
     def idea_params
-      params.permit(:title, :description)
+      params.permit(:title, :description, :tags)
     end
 end

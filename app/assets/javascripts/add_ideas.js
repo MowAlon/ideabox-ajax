@@ -12,7 +12,8 @@ function newIdea(submit){
   submit.on("click", function() {
     var new_title = $('#idea_title').val()
     var new_description = $('#idea_description').val()
-    var endpoint = '/api/v1/ideas.json?title=' + new_title + '&description=' + new_description
+    var new_tags = $('#new_tags').val()
+    var endpoint = '/api/v1/ideas.json?title=' + new_title + '&description=' + new_description + '&tags=' + new_tags
 
     $.post(endpoint).then(function (idea){
       addIdeaToView(idea)
@@ -33,6 +34,7 @@ function addIdeaToView(idea) {
 }
 
 function clearSubmitFields() {
-  $("#idea_title").val("")
-  $("#idea_description").val("")
+  $("#idea_title").val("");
+  $("#idea_description").val("");
+  $("#new_tags").val("");
 }

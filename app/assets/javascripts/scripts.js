@@ -8,6 +8,7 @@ $(document).ready(function() {
   rejectIdea();
   editIdea();
   filterIdeas();
+  listTags();
 });
 
 function ideaElement(idea) {

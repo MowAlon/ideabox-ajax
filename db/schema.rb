@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151130212334) do
+ActiveRecord::Schema.define(version: 20151203035810) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,4 +25,22 @@ ActiveRecord::Schema.define(version: 20151130212334) do
     t.datetime "updated_at",              null: false
   end
 
+  create_table "tag_joiners", force: :cascade do |t|
+    t.integer  "idea_id"
+    t.integer  "tag_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "tag_joiners", ["idea_id"], name: "index_tag_joiners_on_idea_id", using: :btree
+  add_index "tag_joiners", ["tag_id"], name: "index_tag_joiners_on_tag_id", using: :btree
+
+  create_table "tags", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "tag_joiners", "ideas"
+  add_foreign_key "tag_joiners", "tags"
 end
