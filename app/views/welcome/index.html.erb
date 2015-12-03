@@ -1,4 +1,14 @@
-<%= render "new_idea" %>
-<%= render "tags" %>
-<%= render "search" %>
-<%= render "all_ideas" %>
+<div class='well center'>
+  <h1>First, You Put Your Idea In A Box</h1>
+</div>
+
+<div class='container'>
+  <div class='col-md-4'>
+    <%= render "new_idea" %>
+    <%= render "search" %>
+    <%= render "tags" %>
+  </div>
+  <div class='col-md-8'>
+    <%= render "all_ideas" %>
+  </div>
+</div>

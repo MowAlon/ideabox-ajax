@@ -1,15 +1,13 @@
-<div class='container'>
-  <div class='col-md-12 well center'>
-    <h2>Add a new idea</h2>
-    <div class='new_idea'>
-      <%= form_for @idea, url: root_path do  |f| %>
-        <%= f.text_field :title, placeholder: "Title" %>
-        <%= f.text_area :description, placeholder: "Description" %>
-        <input id='new_tags' placeholder='Add some tags (separated by commas)' type='text' name='tag[name]' id='tag_name' />
-      <% end %>
-      <button id='submit_idea' class='btn btn-primary'>
-        Submit Your Bright Idea
-      </button>
-    </div>
+<div class='well center'>
+  <h2>Add a new idea</h2>
+  <div class='new_idea'>
+    <%= form_for @idea, url: root_path do  |f| %>
+      <%= f.text_field :title, placeholder: "Title" %>
+      <%= f.text_area :description, placeholder: "Description" %>
+      <input id='new_tags' placeholder='Add some tags (separated by commas)' type='text' name='tag[name]' id='tag_name' />
+    <% end %>
+    <button id='submit_idea' class='btn btn-primary'>
+      Submit Your Bright Idea
+    </button>
   </div>
 </div>

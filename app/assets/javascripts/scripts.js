@@ -29,58 +29,18 @@ function ideaElement(idea) {
 }
 
 function shortString(string) {
-  var maxLength = 100
-  var trailer = "..."
+  var maxLength = 100;
+  var trailer = "...";
   var indexOfLastGoodSpace = maxLength;
   if (string.length > 100) {
     for (var i = (maxLength - 1); i >= 0; i--){
       if (string[i] === " " && i <= maxLength ) {
-        indexOfLastGoodSpace = i
-        break
+        indexOfLastGoodSpace = i;
+        break;
       };
     };
   } else {
-    trailer = ""
+    trailer = "";
   }
   return string.substring(0, indexOfLastGoodSpace) + trailer;
 }
-
-function filterByTag() {
-  $(document).on("click", ".tag_button", function() {
-    var tag = $(this).attr("id");
-    hideAllIdeas();
-    if (tag === "clear_tag_filter") {tag = ""};
-    clearTextFilter();
-    showFilteredIdeasByTag(tag);
-    highlightTagButton($(this));
-  });
-}
-
-function clearTextFilter() {
-  $("#filter").val("");
-}
-
-function showFilteredIdeasByTag(tag) {
-  $("em:contains('" + tag + "')").closest(".idea").show();
-}
-
-function highlightTagButton(tagObject) {
-  $(".tag_button").toggleClass("btn-info", false)
-  tagObject.toggleClass("btn-info", true);
-}
-
-// function filterIdeas() {
-//   $(document).on("keyup", "#filter", function () {
-//     var filterText = $(this).val();
-//     hideAllIdeas()
-//     showFilteredIdeas(filterText)
-//   });
-// }
-//
-// function hideAllIdeas() {
-//   $("#idea_list").children().hide()
-// }
-//
-// function showFilteredIdeas(filterText) {
-//   $("span:contains('" + filterText + "')").closest(".idea").show();
-// }
