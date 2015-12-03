@@ -51,18 +51,3 @@ class Api::V1::IdeasController < ApplicationController
       params.permit(:title, :description)
     end
 end
-
-# var $ideas = $('.ideas');
-#
-# $.getJSON('/api/v1/ideas').then(function (data) {
-#   data.forEach(appendIdeaToPage);
-#   });
-#
-# function createElementFromIdea(idea) {
-#   return $('<div class="idea"><h2>' + idea.title + '</h2><p>' + idea.description + '</p></div>');
-# }
-#
-# function appendIdeaToPage(idea) {
-#   var $idea = $('<div class="idea"><h2>' + idea.title + '</h2><p>' + idea.description + '</p></div>');
-#   $ideas.append($idea);
-# }
