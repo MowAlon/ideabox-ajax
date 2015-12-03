@@ -7,14 +7,15 @@ $(document).ready(function() {
   rejectIdea();
   makeIdeaEditable();
   editIdea();
+  filterIdeas();
 });
 
 function listIdeas(){
   $.ajax({
      type: 'GET',
      url: '/api/v1/ideas.json',
-     success: function(response){
-       response.forEach(addIdeaToView);
+     success: function(ideas){
+       ideas.forEach(addIdeaToView);
      },
      error: function(){
        console.log("fail")
@@ -112,6 +113,20 @@ function updateIdea(update_type){
    });
 }
 
+function filterIdeas() {
+  $(document).on("keyup", "#filter", function () {
+    var filterText = $(this).val();
+    var allIdeas = $("#idea_list").children();
+    var matchedIdeas = $("span:contains('" + filterText + "')").closest(".idea");
+    allIdeas.each(hideIdea);
+    matchedIdeas.each(showIdea);
+  });
+}
+
+function addManyIdeasToView(ideas) {
+  ideas.forEach(addIdeaToView);
+}
+
 function addIdeaToView(idea) {
   $('#idea_list').prepend(ideaElement(idea));
 }
@@ -142,4 +157,12 @@ function ideaElement(idea) {
 
 function removeIdeaFromView(idea) {
   $('#' + idea.id).remove();
+}
+
+function hideIdea(idea) {
+  $('#' + $(this).attr("id")).toggleClass("hidden", true);
+}
+
+function showIdea(idea) {
+  $('#' + $(this).attr("id")).toggleClass("hidden", false);
 }
