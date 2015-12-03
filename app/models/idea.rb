@@ -1,6 +1,6 @@
 class Idea < ActiveRecord::Base
   enum quality: %w(swill plausible genius)
-  has_many :tag_joiners
+  has_many :tag_joiners, :dependent => :delete_all
   has_many :tags, through: :tag_joiners
 
   def approve

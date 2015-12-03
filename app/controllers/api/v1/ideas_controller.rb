@@ -7,14 +7,15 @@ class Api::V1::IdeasController < ApplicationController
   end
 
   def show
-    respond_with Idea.find_by(id: params[:id])
+    idea = Idea.find_by(id: params[:id])
+    respond_with idea_with_tags(idea)
   end
 
   def create
     new_idea = Idea.new(idea_params.except("tags"))
     if new_idea.save
-      Tag.add_new_tags(params[:tags], new_idea.id) if !params[:tags].empty?
-      render json: new_idea, status: 200
+      Tag.add_new_tags(params[:tags], new_idea) if !params[:tags].empty?
+      render json: idea_with_tags(new_idea), status: 200
     else
       render json: new_idea.errors, status: 400
     end
@@ -25,13 +26,13 @@ class Api::V1::IdeasController < ApplicationController
     update_type = params[:update_type]
     if update_type == "edit"
       if idea.edit(params[:title], params[:description])
-        render json: idea, status: 200
+        render json: idea_with_tags(idea), status: 200
       else
         render json: idea.errors, status: 400
       end
     else
       if idea.send(params[:update_type])
-        render json: idea, status: 200
+        render json: idea_with_tags(idea), status: 200
       else
         render json: idea.errors, status: 400
       end
@@ -58,5 +59,9 @@ class Api::V1::IdeasController < ApplicationController
         idea["tags"] = Idea.find(idea["id"]).tags.map{|tag| tag.name}.join(", ")
         idea
       end
+    end
+
+    def idea_with_tags(idea)
+      ideas_with_tags([idea]).first
     end
 end
