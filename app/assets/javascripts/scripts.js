@@ -50,9 +50,14 @@ function filterByTag() {
     var tag = $(this).attr("id");
     hideAllIdeas();
     if (tag === "clear_tag_filter") {tag = ""};
+    clearTextFilter();
     showFilteredIdeasByTag(tag);
     highlightTagButton($(this));
   });
+}
+
+function clearTextFilter() {
+  $("#filter").val("");
 }
 
 function showFilteredIdeasByTag(tag) {
