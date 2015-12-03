@@ -16,10 +16,9 @@ class Idea < ActiveRecord::Base
   end
 
   def update_response(params)
-    idea = Idea.find_by(id: params[:id])
     update_type = params[:update_type]
     if update_type == "edit"
-      if idea.edit(params[:title], params[:description])
+      if edit(params[:title], params[:description])
         {object: idea_with_tags(idea), status: 200}
       else
         {object: idea.errors, status: 400}
@@ -33,15 +32,16 @@ class Idea < ActiveRecord::Base
     end
   end
 
-  def ideas_with_tags(ideas)
+  def self.ideas_with_tags(ideas)
     JSON.parse(ideas.to_json).map do |idea|
       idea["tags"] = Idea.find(idea["id"]).tags.map{|tag| tag.name}.join(", ")
       idea
     end
   end
 
-  def idea_with_tags(idea)
-    ideas_with_tags([idea]).first
+  def idea_with_tags
+    self["tags"] = tags.map{|tag| tag.name}.join(", ")
+    self
   end
 
   private

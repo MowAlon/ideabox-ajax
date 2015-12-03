@@ -3,26 +3,27 @@ class Api::V1::IdeasController < ApplicationController
 
   def index
     ideas = Idea.all.order('created_at ASC')
-    respond_with Idea.new.ideas_with_tags(ideas)
+    respond_with Idea.ideas_with_tags(ideas)
   end
 
   def show
     idea = Idea.find_by(id: params[:id])
-    respond_with Idea.new.idea_with_tags(idea)
+    respond_with idea.idea_with_tags
   end
 
   def create
     new_idea = Idea.new(idea_params.except("tags"))
     if new_idea.save
       Tag.add_new_tags(params[:tags], new_idea) if !params[:tags].empty?
-      render json: Idea.new.idea_with_tags(new_idea), status: 200
+      render json: new_idea.idea_with_tags, status: 200
     else
       render json: new_idea.errors, status: 400
     end
   end
 
   def update
-    response = Idea.update_response(params)
+    idea = Idea.find_by(id: params[:id])
+    response = idea.update_response(params)
     render json: response[:object], status: response[:status]
 
 
