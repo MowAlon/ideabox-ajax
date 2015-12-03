@@ -64,4 +64,5 @@ class Api::V1::IdeasController < ApplicationController
     def idea_with_tags(idea)
       ideas_with_tags([idea]).first
     end
+
 end
