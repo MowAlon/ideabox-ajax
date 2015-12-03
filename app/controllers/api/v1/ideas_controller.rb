@@ -5,6 +5,10 @@ class Api::V1::IdeasController < ApplicationController
     respond_with Idea.all.order('created_at ASC').to_json
   end
 
+  def show
+    respond_with Idea.find_by(id: params[:id])
+  end
+
   def create
     new_idea = Idea.new(idea_params)
     if new_idea.save

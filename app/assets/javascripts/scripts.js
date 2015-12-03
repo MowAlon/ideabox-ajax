@@ -51,22 +51,30 @@ function rejectIdea() {
 
 function makeIdeaEditable() {
   $(document).on("click", ".make-editable", function () {
-    var idea_id = $(this).closest(".idea").attr("id")
+    var ideaID = $(this).closest(".idea").attr("id")
     var ideaContent = $(this).siblings(".idea-content");
-    var title = ideaContent.find(".title").text();
-    var description = ideaContent.find(".description").text();
+    $.ajax({
+       type: 'GET',
+       url: '/api/v1/ideas/' + ideaID + '.json',
+       success: function(idea){
+          ideaContent.replaceWith("<div class='edit-boxes'>" +
+                                    "<h1>" + ideaID + ".</h1>" +
+                                    "<form action='/' method='put'>" +
+                                      "<input class='title' value='" + idea.title + "' type='text' name='idea[title]' id='idea_title' />" +
+                                      "<textarea class='description' name='idea[description]' id='idea_description'>" + idea.description + "</textarea>" +
+                                    "</form>" +
+                                    "<button class='btn btn-primary edit'>Save</button>" +
+                                  "</div>"
+                                );
+       },
+       error: function(){
+         console.log("fail")
+       }
+     });
 
-    ideaContent.replaceWith("<div class='edit-boxes'>" +
-                              "<h1>" + idea_id + ".</h1>" +
-                              "<form action='/' method='put'>" +
-                                "<input class='title' value='" + title + "' type='text' name='idea[title]' id='idea_title' />" +
-                                "<textarea class='description' name='idea[description]' id='idea_description'>" + description + "</textarea>" +
-                              "</form>" +
-                              "<button class='btn btn-primary edit'>Save</button>" +
-                            "</div>"
-                          );
   });
 }
+
 
 function editIdea() {
   updateIdea("edit")
@@ -112,6 +120,14 @@ function deleteIdea(){
    });
 }
 
+function filterIdeas() {
+  $(document).on("keyup", "#filter", function () {
+    var filterText = $(this).val();
+    hideAllIdeas()
+    showFilteredIdeas(filterText)
+  });
+}
+
 function addManyIdeasToView(ideas) {
   ideas.forEach(addIdeaToView);
 }
@@ -128,35 +144,42 @@ function ideaElement(idea) {
   return "<div id='" + idea.id + "' class='idea'>" +
           "<div class='idea-content'>" +
             "<h1>" + idea.id + ". <span class='title'>" + idea.title + "</span></h1>" +
-            "<h3><span class='description'>" + idea.description + "</span></h3>" +
+            "<h3><span class='description'>" + shortString(idea.description) + "</span></h3>" +
           "</div>" +
           "<p class='text-right'>Submitted: " + idea.created_at + " -- Current rating: " + idea.quality + " -- " +
           "<button class='btn btn-success approve'><span class='glyphicon glyphicon-thumbs-up'></span></button>" +
           "<button class='btn btn-danger reject'><span class='glyphicon glyphicon-thumbs-down'></span></button></p>" +
-          "<a class='btn btn-info make-editable'><span class='glyphicon glyphicon-pencil'></span></a>" +
+          "<a class='btn btn-info make-editable'><span class='glyphicon glyphicon-pencil'></span></a>" + " | " +
           "<a class='btn btn-danger delete'><span class='glyphicon glyphicon-trash'></span></a>" +
           "<hr>" +
         "</div>"
+}
+
+function shortString(string) {
+  var maxLength = 100
+  var trailer = "..."
+  var indexOfLastGoodSpace = maxLength;
+  if (string.length > 100) {
+    for (var i = (maxLength - 1); i >= 0; i--){
+      if (string[i] === " " && i <= maxLength ) {
+        indexOfLastGoodSpace = i
+        break
+      };
+    };
+  } else {
+    trailer = ""
+  }
+  return string.substring(0, indexOfLastGoodSpace) + trailer;
 }
 
 function removeIdeaFromView(idea) {
   $('#' + idea.id).remove();
 }
 
-function filterIdeas() {
-  $(document).on("keyup", "#filter", function () {
-    var filterText = $(this).val();
-    var allIdeas = $("#idea_list").children();
-    var matchedIdeas = $("span:contains('" + filterText + "')").closest(".idea");
-    allIdeas.each(hideIdea);
-    matchedIdeas.each(showIdea);
-  });
+function hideAllIdeas() {
+  $("#idea_list").children().hide()
 }
 
-function hideIdea(idea) {
-  $('#' + $(this).attr("id")).toggleClass("hidden", true);
-}
-
-function showIdea(idea) {
-  $('#' + $(this).attr("id")).toggleClass("hidden", false);
+function showFilteredIdeas(filterText) {
+  $("span:contains('" + filterText + "')").closest(".idea").show();
 }
